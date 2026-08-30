@@ -1,70 +1,187 @@
 # Incubator Architecture
 
-The repository has two layers: the **catalog layer** and the **experiment layer**.
+The repository is an **application incubator**, not a TUI-only project. Its architecture deliberately separates the **domain/problem being explored** from the **interface used to explore it**.
 
-## Catalog layer
+## Architectural layers
+
+```text
+                         IDEA CATALOG
+                              │
+                              ▼
+                       EXPERIMENT DEFINITION
+                              │
+                              ▼
+                         DOMAIN MODEL
+                              │
+             ┌────────────────┼────────────────┐
+             ▼                ▼                ▼
+          SERVICES          LIBRARIES         DATA
+             │                │                │
+             └────────────────┼────────────────┘
+                              │
+                    ┌─────────┼─────────┐
+                    ▼         ▼         ▼
+                  TUI       DESKTOP     WEB
+                    │         │         │
+                    ▼         ▼         ▼
+                 OpenTUI    GUI/WGPU   WASM
+                    │         │         │
+                    └─────────┼─────────┘
+                              ▼
+                       DEPLOYABLE APP
+```
+
+The important boundary is **domain ↔ interface**, not `TUI ↔ everything else`.
+
+## Repository layers
+
+### Catalog layer
 
 ```text
 IDEAS.md
    │
-   ├── category
-   │      └── app directory
+   ├── domain/category
+   │      └── application idea
    │             ├── README.md
    │             ├── SPEC.md
+   │             ├── ARCHITECTURE.md
    │             └── ROADMAP.md
    │
    └── cross-cutting experiments
 ```
 
-`IDEAS.md` answers **what exists**. An app README answers **why it exists**. `SPEC.md` answers **what it should do**. `ROADMAP.md` answers **what happens next**.
+`IDEAS.md` answers **what exists**. An app README answers **why it exists**. `SPEC.md` answers **what it should do**. `ARCHITECTURE.md` answers **how the system may be decomposed**. `ROADMAP.md` answers **what happens next**.
 
-## Application architecture
+### Implementation layer
 
-When an idea becomes code, prefer a structure similar to:
+A larger Rust application may use:
 
 ```text
 src/
-├── main.rs              # startup and terminal lifecycle
-├── app.rs               # application state/orchestration
-├── event.rs             # input and internal events
-├── command.rs           # user commands/keybindings
-├── state.rs             # domain/UI state
-├── ui/
-│   ├── mod.rs
-│   ├── layout.rs
-│   ├── widgets.rs
-│   └── theme.rs
-├── domain/              # domain logic independent of rendering
-├── services/            # async/background integrations
-└── persistence/         # local state/config/cache
+├── main.rs                 # startup/runtime lifecycle
+├── lib.rs                  # reusable library boundary, when appropriate
+├── app.rs                  # application orchestration
+├── domain/                 # domain logic independent of UI
+│   ├── models.rs
+│   ├── rules.rs
+│   └── services.rs
+├── application/            # use cases / commands / workflows
+├── adapters/               # external systems and protocol adapters
+├── infrastructure/         # persistence, network, processes, hardware
+├── ui/                     # optional interface layer
+│   ├── tui/
+│   ├── desktop/
+│   └── web/
+├── event.rs                # internal/event abstractions when useful
+├── command.rs              # application commands
+└── persistence/             # local state/config/cache
 ```
 
-Do not force this exact structure on tiny experiments. The purpose is to prevent domain logic from becoming inseparable from rendering as the prototype grows.
+Do not force this exact structure on tiny experiments. Start small, but preserve a clean seam around domain logic whenever multiple interfaces or integrations are plausible.
 
-## Event model
+## Interface strategy
 
-A preferred model is:
+A project can have multiple frontends over the same core:
 
 ```text
-Terminal input ───────┐
-                      ▼
-                 Event channel
-                      │
-                      ▼
-                State transition
-                      │
-       ┌──────────────┴──────────────┐
-       ▼                             ▼
- Background workers             UI renderer
-       │                             │
-       └──── result channel ─────────┘
+                     ┌─────────────┐
+                     │ DOMAIN CORE │
+                     └──────┬──────┘
+                            │
+           ┌────────────────┼────────────────┐
+           ▼                ▼                ▼
+      ┌─────────┐      ┌─────────┐      ┌─────────┐
+      │   TUI   │      │ DESKTOP │      │   WEB   │
+      └─────────┘      └─────────┘      └─────────┘
+           │                │                │
+        OpenTUI          WGPU/GUI          WASM
 ```
 
-UI code should consume already-produced results rather than synchronously performing slow work during rendering.
+This is especially useful when the TUI is the fastest way to prototype an interaction, but a different interface is better for the eventual product.
+
+## Event and concurrency model
+
+Interactive applications should separate input, state transitions, rendering, and slow external work:
+
+```text
+                       USER / SYSTEM EVENTS
+                               │
+                               ▼
+                        EVENT INGESTION
+                               │
+                               ▼
+                        STATE / COMMANDS
+                               │
+                 ┌─────────────┼─────────────┐
+                 ▼             ▼             ▼
+              TUI UI       DESKTOP UI      WEB UI
+                 │             │             │
+                 └─────────────┼─────────────┘
+                               │
+                               ▼
+                         DOMAIN COMMAND
+                               │
+                  ┌────────────┼────────────┐
+                  ▼            ▼            ▼
+               NETWORK       DISK        PROCESS
+               WORKER       WORKER        WORKER
+                  │            │            │
+                  └────────────┼────────────┘
+                               ▼
+                         RESULT EVENTS
+                               │
+                               ▼
+                         STATE UPDATE
+```
+
+Slow filesystem, network, subprocess, database, and hardware operations should not block interactive rendering or input handling. Prefer asynchronous, thread-safe, message-driven boundaries where the workload warrants them.
+
+## Domain portability
+
+When an idea may eventually have multiple interfaces, define domain types without UI-specific assumptions:
+
+```text
+GOOD
+
+Domain Event
+   │
+   ├── TUI renderer
+   ├── JSON API
+   ├── WebSocket stream
+   └── Desktop view
+
+AVOID
+
+Domain Event
+   │
+   └── directly constructs terminal cells
+```
+
+The domain should describe **what happened**. The interface decides **how it is presented**.
 
 ## Renderer boundary
 
-Keep rendering behind a small interface where practical. This allows experiments to compare OpenTUI-compatible approaches, a Rust-native port, or another renderer without rewriting the domain model.
+OpenTUI can be used as the primary interactive laboratory where appropriate. Keep rendering behind a small interface or presentation module when doing so reduces coupling. This allows experiments to compare OpenTUI-compatible approaches, a Rust-native TUI framework, a desktop renderer, a web frontend, or a headless mode without rewriting the domain model.
+
+## Headless mode
+
+Important systems should consider a headless execution path:
+
+```text
+                 APPLICATION CORE
+                        │
+              ┌─────────┴─────────┐
+              ▼                   ▼
+          INTERACTIVE          HEADLESS
+              │                   │
+          TUI / GUI            CLI / API
+              │                   │
+              └─────────┬─────────┘
+                        ▼
+                    SAME CORE
+```
+
+Headless operation improves automation, testing, CI, scripting, benchmarking, and future service deployment.
 
 ## Persistence
 
@@ -72,4 +189,34 @@ Prefer boring, inspectable formats for prototypes: TOML, JSON, SQLite, or line-o
 
 ## Shared components
 
-Only extract a shared component after repeated evidence. Two applications independently implementing a command palette is a stronger signal than a speculative framework created for ten future apps.
+Extract shared components only after repeated evidence. A component should ideally have:
+
+1. at least two meaningful consumers;
+2. a stable API boundary;
+3. documented behavior;
+4. tests or rendering snapshots where applicable;
+5. a reason to exist independently of one application's UI.
+
+Reusable components may be UI widgets, domain crates, protocol clients, simulation engines, graph models, storage abstractions, or benchmarking utilities—not only TUI widgets.
+
+## Graduation architecture
+
+A successful incubator idea can graduate in several forms:
+
+```text
+                     INCUBATOR IDEA
+                           │
+          ┌────────────────┼────────────────┐
+          ▼                ▼                ▼
+      TUI PROJECT       RUST CRATE       SERVICE
+          │                │                │
+          ▼                ▼                ▼
+       STANDALONE      PUBLISHED/        DEPLOYED
+       APPLICATION     REUSABLE          SYSTEM
+                           │
+          ┌────────────────┼────────────────┐
+          ▼                ▼                ▼
+        DESKTOP            WEB            EMBEDDED
+```
+
+The final product does not need to resemble the original prototype. The incubator's job is to discover whether the underlying idea deserves to exist and determine the best implementation shape.
