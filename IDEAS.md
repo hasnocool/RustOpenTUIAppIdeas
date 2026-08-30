@@ -132,6 +132,157 @@ These are intentionally small applications that can be built quickly and used as
 | TINY-006 | BenchmarkTUI — repeatable operation benchmark dashboard | seed | 28/30 | `apps/tiny-tools/benchmark-tui/` |
 | TINY-007 | Context-free Watch — programmable command monitor | seed | 25/30 | `apps/tiny-tools/watchtui/` |
 
+## Advanced applications / systems
+
+These ideas intentionally move beyond small utilities. They are multi-component applications intended to exercise persistent state, asynchronous workers, event streams, graphs, databases, plugins, simulation, orchestration, or external integrations while remaining approachable as staged Rust/OpenTUI projects.
+
+### AI & agent systems
+
+| ID | Idea | Status | Score | Directory |
+|---|---|---:|---:|---|
+| ADV-AI-001 | AI Command Center — terminal AI workstation for models, tasks, agents, jobs, costs, memory, and providers | seed | 30/30 | `apps/advanced/ai-command-center/` |
+| ADV-AI-002 | Agent Laboratory — interactive multi-agent planning, delegation, tool, memory, and evaluation environment | seed | 30/30 | `apps/advanced/agent-laboratory/` |
+| ADV-AI-003 | AI Workflow Engine — visual/task-oriented AI and automation workflow runner | seed | 29/30 | `apps/advanced/ai-workflow-engine/` |
+| ADV-AI-004 | Knowledge Graph TUI — navigable graph connecting projects, notes, documents, concepts, and sources | seed | 29/30 | `apps/advanced/knowledge-graph-tui/` |
+
+### Infrastructure & networking
+
+| ID | Idea | Status | Score | Directory |
+|---|---|---:|---:|---|
+| ADV-INF-001 | Infrastructure Command Center — hosts, containers, services, storage, network, and logs in one TUI | seed | 30/30 | `apps/advanced/infrastructure-command-center/` |
+| ADV-INF-002 | Network Observatory — live topology, latency, routes, ports, traffic, and node inspection | seed | 29/30 | `apps/advanced/network-observatory/` |
+| ADV-INF-003 | Event Stream Explorer — interactive event-stream inspection, filtering, replay, and consumer tracing | seed | 28/30 | `apps/advanced/event-stream-explorer/` |
+| ADV-INF-004 | Web Crawler Observatory — crawler jobs, queues, workers, domains, throughput, errors, and crawl graphs | seed | 28/30 | `apps/advanced/web-crawler-observatory/` |
+
+### Data & research systems
+
+| ID | Idea | Status | Score | Directory |
+|---|---|---:|---:|---|
+| ADV-DATA-001 | Data Observatory — terminal data analysis workspace for files, databases, APIs, transformations, and charts | seed | 30/30 | `apps/advanced/data-observatory/` |
+| ADV-DATA-002 | SQLite Studio TUI — database browser, SQL editor, schema explorer, query history, and results viewer | seed | 29/30 | `apps/advanced/sqlite-studio/` |
+| ADV-DATA-003 | Research Observatory — sources, papers, notes, claims, topics, evidence, and knowledge graphs | seed | 30/30 | `apps/advanced/research-observatory/` |
+| ADV-DATA-004 | Project Universe — portfolio graph for repositories, projects, dependencies, activity, health, issues, and PRs | seed | 29/30 | `apps/advanced/project-universe/` |
+
+### Simulation & optimization
+
+| ID | Idea | Status | Score | Directory |
+|---|---|---:|---:|---|
+| ADV-SIM-001 | Simulation Laboratory — reusable simulation environment with visualization, controls, metrics, and scenario management | seed | 30/30 | `apps/advanced/simulation-laboratory/` |
+| ADV-SIM-002 | Colony Simulator — agent-based bee/ant colony ecosystem simulation | seed | 29/30 | `apps/advanced/colony-simulator/` |
+| ADV-SIM-003 | Power Grid Simulator — energy generation, storage, loads, weather, and grid-flow simulation | seed | 30/30 | `apps/advanced/power-grid-simulator/` |
+| ADV-SIM-004 | Optimization Laboratory — interactive scheduling, routing, packing, energy, and resource-allocation experiments | seed | 29/30 | `apps/advanced/optimization-laboratory/` |
+
+### Developer platforms
+
+| ID | Idea | Status | Score | Directory |
+|---|---|---:|---:|---|
+| ADV-DEV-001 | Developer Cockpit — project, Git, tasks, builds, tests, logs, terminals, and workspace state | seed | 30/30 | `apps/advanced/developer-cockpit/` |
+| ADV-DEV-002 | TUI Component Laboratory — interactive showcase, benchmark, and testbed for reusable OpenTUI components | seed | 30/30 | `apps/advanced/tui-component-laboratory/` |
+| ADV-DEV-003 | Dependency Universe — generalized dependency graph explorer with cycles, duplicates, versions, size, and licenses | seed | 28/30 | `apps/advanced/dependency-universe/` |
+| ADV-DEV-004 | Workflow Engine — generic event-driven automation graph with triggers, workers, branching, retries, and persistence | seed | 30/30 | `apps/advanced/workflow-engine/` |
+
+## Advanced project architecture patterns
+
+The advanced tier should reuse a small number of architectural patterns rather than creating unrelated one-off implementations.
+
+```text
+                         ADVANCED TUI APPLICATION
+                                    |
+             +----------------------+----------------------+
+             |                      |                      |
+             v                      v                      v
+          UI STATE              DOMAIN CORE           PERSISTENCE
+             |                      |                      |
+             v                      v                      v
+        OPEN TUI VIEW          EVENTS / COMMANDS       SQLite / JSON
+             |                      |                      |
+             +----------+-----------+-----------+----------+
+                        |                       |
+                        v                       v
+                 ASYNC WORKERS             INTEGRATIONS
+                        |                       |
+                 +------+-------+       +------+-------+
+                 |              |       |              |
+               FILES          NETWORK  GIT           APIs
+```
+
+### Multi-worker pattern
+
+```text
+                         EVENT LOOP
+                             |
+                    +--------+--------+
+                    |                 |
+                    v                 v
+                 UI TASK          WORK QUEUE
+                    |                 |
+                    |          +------+------+------+
+                    |          |      |      |      |
+                    |          v      v      v      v
+                    |        READ   FETCH  PARSE  COMPUTE
+                    |          |      |      |      |
+                    |          +------+------+------+
+                    |                 |
+                    +--------< EVENTS + RESULTS
+                             |
+                             v
+                           RENDER
+```
+
+All long-running work should be asynchronous/non-blocking from the UI perspective. Workers communicate through channels/events and never perform blocking work directly in the render/input path.
+
+### Graph application pattern
+
+```text
+                  GRAPH STORE
+                       |
+              +--------+--------+
+              |                 |
+             NODES            EDGES
+              |                 |
+              +--------+--------+
+                       |
+                       v
+                GRAPH ENGINE
+                       |
+              +--------+--------+
+              |        |        |
+              v        v        v
+            FILTER   LAYOUT   SEARCH
+              |        |        |
+              +--------+--------+
+                       v
+                 OPEN TUI VIEW
+```
+
+### Simulation pattern
+
+```text
+                    SCENARIO
+                       |
+                       v
+                  SIMULATION
+                       |
+              +--------+--------+
+              |        |        |
+              v        v        v
+            AGENTS   RULES    RESOURCES
+              |        |        |
+              +--------+--------+
+                       |
+                       v
+                    TICK N
+                       |
+              +--------+--------+
+              |                 |
+              v                 v
+           METRICS          SNAPSHOT
+              |                 |
+              +--------+--------+
+                       v
+                    RENDER
+```
+
 ## Cross-cutting idea backlog
 
 These are capabilities that may become apps, reusable crates, or experiments rather than standalone applications:
@@ -168,6 +319,42 @@ These are capabilities that may become apps, reusable crates, or experiments rat
 - Keyboard-layout visualization widget
 - ANSI color/theme preview widget
 - Context-window/token budget visualization widget
+- Graph layout engine
+- Event-stream viewer widget
+- Simulation tick/control framework
+- Scenario/save-state format
+- Worker pool abstraction
+- Job queue abstraction
+- Structured application event log
+- Plugin/provider registry
+- Data-source adapter interface
+- Query editor component
+- Schema browser component
+- Terminal dashboard grid/layout engine
+- TUI command execution sandbox
+- Cross-application metrics model
+
+## Incubator meta-project
+
+The repository itself should eventually expose these ideas through an interactive TUI that discovers the catalog and application documentation at runtime. The catalog browser should support:
+
+- category filtering
+- status filtering
+- fuzzy search
+- score sorting
+- application detail views
+- ASCII diagram browsing
+- architecture/state/navigation diagram views
+- experiment and prototype discovery
+- idea lifecycle updates
+- documentation freshness indicators
+- keyboard-driven navigation
+- related-idea graph traversal
+- reusable-component dependency discovery
+- advanced-project architecture views
+- experiment-to-project promotion tracking
+
+The meta-project is intentionally both a useful application and a testbed for the shared components listed above.
 
 ## Future idea intake
 
@@ -189,20 +376,36 @@ Then create the app directory from `docs/templates/APP_README.md` and expand the
 
 An idea should normally graduate only after it has a demonstrated vertical slice, documented UX, known technical risks, and a clear reason to exist independently. A high score alone is not enough.
 
-## Incubator meta-project
+## Advanced-project promotion ladder
 
-The repository itself should eventually expose these ideas through an interactive TUI that discovers the catalog and application documentation at runtime. The catalog browser should support:
+```text
+                         IDEA
+                           |
+                           v
+                      ASCII DESIGN
+                           |
+                           v
+                    DOMAIN PROTOTYPE
+                           |
+                           v
+                    INTERACTIVE TUI
+                           |
+                           v
+                  ASYNC / DATA LAYER
+                           |
+                           v
+                 REAL INTEGRATION TEST
+                           |
+                           v
+                     VALIDATION
+                           |
+                    +------+------+
+                    |             |
+                    v             v
+                  INCUBATE     GRADUATE
+                    |             |
+                    v             v
+                 ITERATE      STANDALONE
+```
 
-- category filtering
-- status filtering
-- fuzzy search
-- score sorting
-- application detail views
-- ASCII diagram browsing
-- architecture/state/navigation diagram views
-- experiment and prototype discovery
-- idea lifecycle updates
-- documentation freshness indicators
-- keyboard-driven navigation
-
-The meta-project is intentionally both a useful application and a testbed for the shared components listed above.
+A complicated idea should be decomposed into independently testable vertical slices. The incubator should prefer proving one complete interaction path before expanding breadth.
