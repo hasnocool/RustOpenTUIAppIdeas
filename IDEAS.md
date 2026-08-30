@@ -18,14 +18,7 @@ This is the canonical inventory for the incubator. App directories are the sourc
 
 ## Scoring model
 
-Each idea can be scored from 1–5 for:
-
-- **Utility** — recurring real-world usefulness
-- **Learning** — how much it teaches Rust/TUI architecture
-- **Feasibility** — likelihood of a small first version
-- **Differentiation** — room for a distinctive experience
-- **Expansion** — plausible path from toy to serious tool
-- **Reuse** — reusable components/knowledge for other apps
+Each idea can be scored from 1–5 for Utility, Learning, Feasibility, Differentiation, Expansion, and Reuse.
 
 `Priority = Utility + Learning + Feasibility + Differentiation + Expansion + Reuse`.
 
@@ -51,6 +44,13 @@ Scores are deliberately subjective. Their purpose is comparison, not fake precis
 | DEV-002 | RepoTUI — repository/project portfolio browser | seed | 27/30 | `apps/development/repotui/` |
 | DEV-003 | EnvTUI — environment/config inspector | seed | 20/30 | `apps/development/envtui/` |
 | DEV-004 | Markdown Explorer — keyboard-driven Markdown reader | seed | 24/30 | `apps/development/markdown-explorer/` |
+| DEV-005 | CargoLab — interactive Cargo project explorer | seed | 27/30 | `apps/development/cargo-lab/` |
+| DEV-006 | DepGraph — dependency graph explorer | seed | 27/30 | `apps/development/depgraph/` |
+| DEV-007 | CrateFinder — local Cargo ecosystem search | seed | 24/30 | `apps/development/crate-finder/` |
+| DEV-008 | RustSize — Rust binary/project size analyzer | seed | 26/30 | `apps/development/rustsize/` |
+| DEV-009 | APIProbe — interactive HTTP API explorer | seed | 28/30 | `apps/development/apiprobe/` |
+| DEV-010 | EnvDiff — compare environment/configuration sets | seed | 25/30 | `apps/development/envdiff/` |
+| DEV-011 | DiffScope — generalized visual diff explorer | seed | 29/30 | `apps/development/diffscope/` |
 
 ## AI / LLM tools
 
@@ -60,6 +60,10 @@ Scores are deliberately subjective. Their purpose is comparison, not fake precis
 | AI-002 | ModelManager — local model inventory and lifecycle UI | exploring | 28/30 | `apps/ai/model-manager/` |
 | AI-003 | AI Router — route tasks across local/remote models | seed | 30/30 | `apps/ai/ai-router/` |
 | AI-004 | ModelBench — repeatable local model benchmark explorer | seed | 29/30 | `apps/ai/modelbench/` |
+| AI-005 | PromptLab — interactive prompt experimentation workspace | seed | 28/30 | `apps/ai/promptlab/` |
+| AI-006 | TokenLens — prompt/token/context inspection tool | seed | 27/30 | `apps/ai/tokenlens/` |
+| AI-007 | ModelMatrix — multi-model capability comparison | seed | 28/30 | `apps/ai/modelmatrix/` |
+| AI-008 | ContextTUI — interactive context-window visualizer | seed | 27/30 | `apps/ai/context-tui/` |
 
 ## Operations / infrastructure
 
@@ -68,6 +72,11 @@ Scores are deliberately subjective. Their purpose is comparison, not fake precis
 | OPS-001 | DockerTUI — container/service manager | seed | 28/30 | `apps/operations/dockertui/` |
 | OPS-002 | NetDash — interfaces, routes, traffic and connectivity | seed | 25/30 | `apps/operations/netdash/` |
 | OPS-003 | ServiceBoard — systemd/service health dashboard | seed | 25/30 | `apps/operations/serviceboard/` |
+| OPS-004 | WatchTUI — generic non-blocking command watcher | seed | 26/30 | `apps/operations/watchtui/` |
+| OPS-005 | PortMap — visual local port/process map | seed | 27/30 | `apps/operations/portmap/` |
+| OPS-006 | ServiceMap — service dependency graph | seed | 28/30 | `apps/operations/service-map/` |
+| OPS-007 | ProcessTree — hierarchical process explorer | seed | 26/30 | `apps/operations/process-tree/` |
+| OPS-008 | LatencyTUI — interactive network latency monitor | seed | 25/30 | `apps/operations/latency-tui/` |
 
 ## Off-grid / energy
 
@@ -83,6 +92,12 @@ Scores are deliberately subjective. Their purpose is comparison, not fake precis
 | DATA-001 | JSON Explorer — interactive tree browser | seed | 26/30 | `apps/data/json-explorer/` |
 | DATA-002 | CSV Explorer — spreadsheet-like terminal data browser | seed | 28/30 | `apps/data/csv-explorer/` |
 | DATA-003 | HardwareBench — hardware/LLM benchmark research browser | exploring | 30/30 | `apps/data/hardwarebench/` |
+| DATA-004 | TreeTUI — universal hierarchical data explorer | seed | 28/30 | `apps/data/tree-tui/` |
+| DATA-005 | DataProbe — unknown-file/data structure investigator | seed | 29/30 | `apps/data/dataprobe/` |
+| DATA-006 | JSONPatchTUI — interactive JSON difference viewer | seed | 28/30 | `apps/data/jsonpatch-tui/` |
+| DATA-007 | HistogramTUI — terminal histogram explorer | seed | 23/30 | `apps/data/histogram-tui/` |
+| DATA-008 | SparkTUI — compact terminal chart/series explorer | seed | 25/30 | `apps/data/spark-tui/` |
+| DATA-009 | TimelineTUI — interactive event and project timelines | seed | 26/30 | `apps/data/timeline-tui/` |
 
 ## Productivity
 
@@ -91,6 +106,8 @@ Scores are deliberately subjective. Their purpose is comparison, not fake precis
 | PROD-001 | TaskForge — keyboard-first task manager | seed | 23/30 | `apps/productivity/taskforge/` |
 | PROD-002 | NoteTUI — local Markdown notes browser | seed | 25/30 | `apps/productivity/notetui/` |
 | PROD-003 | Pomodoro TUI — timer and work-session tracker | seed | 20/30 | `apps/productivity/pomodoro/` |
+| PROD-004 | KanbanTUI — keyboard-driven terminal Kanban board | seed | 27/30 | `apps/productivity/kanban-tui/` |
+| PROD-005 | DecisionTUI — weighted decision matrix | seed | 29/30 | `apps/productivity/decision-tui/` |
 
 ## Fun / visual experiments
 
@@ -98,8 +115,22 @@ Scores are deliberately subjective. Their purpose is comparison, not fake precis
 |---|---|---:|---:|---|
 | FUN-001 | ASCII Weather — expressive terminal weather display | seed | 21/30 | `apps/fun/ascii-weather/` |
 | FUN-002 | QR TUI — terminal QR generation/preview experiment | seed | 22/30 | `apps/fun/qr-tui/` |
+| FUN-003 | ColorLab — ANSI terminal color/theme laboratory | seed | 25/30 | `apps/fun/colorlab/` |
+| FUN-004 | KeyboardLab — interactive keyboard/keybinding designer | seed | 26/30 | `apps/fun/keyboard-lab/` |
 
----
+## Tiny tools / focused experiments
+
+These are intentionally small applications that can be built quickly and used as component laboratories for larger projects.
+
+| ID | Idea | Status | Score | Directory |
+|---|---|---:|---:|---|
+| TINY-001 | ASCII Architect — interactive ASCII diagram builder | seed | 30/30 | `apps/tiny-tools/ascii-architect/` |
+| TINY-002 | ASCII Flow — interactive terminal flowchart designer | seed | 29/30 | `apps/tiny-tools/ascii-flow/` |
+| TINY-003 | StateMachineTUI — finite-state-machine designer/exporter | seed | 30/30 | `apps/tiny-tools/state-machine-tui/` |
+| TINY-004 | RegexLab — interactive regex playground | seed | 28/30 | `apps/tiny-tools/regexlab/` |
+| TINY-005 | HexViewTUI — interactive binary/hex viewer | seed | 27/30 | `apps/tiny-tools/hexview-tui/` |
+| TINY-006 | BenchmarkTUI — repeatable operation benchmark dashboard | seed | 28/30 | `apps/tiny-tools/benchmark-tui/` |
+| TINY-007 | Context-free Watch — programmable command monitor | seed | 25/30 | `apps/tiny-tools/watchtui/` |
 
 ## Cross-cutting idea backlog
 
@@ -125,6 +156,18 @@ These are capabilities that may become apps, reusable crates, or experiments rat
 - Plugin architecture for data providers
 - Shared benchmark result schema
 - Idea catalog browser TUI
+- ASCII diagram editor widget
+- ASCII box/connector layout engine
+- Diagram import/export abstraction
+- State-machine graph widget
+- Timeline widget
+- Decision-matrix widget
+- Histogram/sparkline chart widgets
+- Generic tree explorer widget
+- Interactive diff widget
+- Keyboard-layout visualization widget
+- ANSI color/theme preview widget
+- Context-window/token budget visualization widget
 
 ## Future idea intake
 
@@ -145,3 +188,21 @@ Then create the app directory from `docs/templates/APP_README.md` and expand the
 ## Promotion rule
 
 An idea should normally graduate only after it has a demonstrated vertical slice, documented UX, known technical risks, and a clear reason to exist independently. A high score alone is not enough.
+
+## Incubator meta-project
+
+The repository itself should eventually expose these ideas through an interactive TUI that discovers the catalog and application documentation at runtime. The catalog browser should support:
+
+- category filtering
+- status filtering
+- fuzzy search
+- score sorting
+- application detail views
+- ASCII diagram browsing
+- architecture/state/navigation diagram views
+- experiment and prototype discovery
+- idea lifecycle updates
+- documentation freshness indicators
+- keyboard-driven navigation
+
+The meta-project is intentionally both a useful application and a testbed for the shared components listed above.
