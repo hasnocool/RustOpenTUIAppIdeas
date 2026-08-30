@@ -1,0 +1,12 @@
+# Cargo.toml
+[package]
+name = "opentui-incubator"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.85"
+description = "Terminal incubator and idea explorer for Rust OpenTUI application ideas"
+license = "MIT"
+
+[dependencies]
+crossterm = "0.29"
+opentui_rust = "0.1"
